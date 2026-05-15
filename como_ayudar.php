@@ -1,0 +1,90 @@
+<?php
+/**
+ * Este archivo ha sido renombrado a .php para que el servidor procese el código correctamente.
+ */
+// ==============================================
+// 1. INCLUIR PHPMailer (ajusta la ruta si es necesario)
+// ==============================================
+require 'src/PHPMailer.php';
+require 'src/SMTP.php';
+require 'src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// ==============================================
+// 2. VERIFICAR QUE EL FORMULARIO SEA ENVIADO POR POST
+// ==============================================
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    // Limpiar y recoger datos del formulario
+    $nombre = isset($_POST['nombre']) ? htmlspecialchars(trim($_POST['nombre'])) : '';
+    $email  = isset($_POST['email'])  ? htmlspecialchars(trim($_POST['email']))  : '';
+    $mensaje= isset($_POST['mensaje'])? htmlspecialchars(trim($_POST['mensaje'])): '';
+    
+    // Validar campos obligatorios
+    if (empty($nombre) || empty($email) || empty($mensaje)) {
+        echo "❌ Error: Todos los campos son obligatorios.";
+        exit;
+    }
+    
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "❌ Error: El correo electrónico no es válido.";
+        exit;
+    }
+    
+    // ==========================================
+    // 3. CONFIGURACIÓN DEL ENVÍO (CÁMBIALO AQUÍ)
+    // ==========================================
+    $correo_origen  = 'JEHOVAESMIPASTORIGLESIAYFUNDAC@GMAIL.COM';      // Tu correo Gmail (o el que uses para SMTP)
+    $password_app   = 'xxxx xxxx xxxx xxxx';      // Contraseña de aplicación de Gmail (16 dígitos)
+    $correo_destino = 'JEHOVAESMIPASTORIGLESIAYFUNDAC@GMAIL.COM';  // El correo donde quieres recibir los mensajes
+    
+    // Crear instancia de PHPMailer
+    $mail = new PHPMailer(true);
+    
+    try {
+        // Configuración del servidor SMTP de Gmail
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $correo_origen;
+        $mail->Password   = $password_app;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        
+        // Remitente y destinatario
+        $mail->setFrom($correo_origen, 'Formulario Web - Jehová es mi Pastor');
+        $mail->addAddress($correo_destino, 'Nombre del Receptor'); // A quien le llega
+        $mail->addReplyTo($email, $nombre); // Para que respondas directamente al usuario
+        
+        // Contenido del correo
+        $mail->isHTML(true);
+        $mail->Subject = "Nuevo mensaje de $nombre - Iglesia Jehová es mi Pastor";
+        $mail->Body    = "
+            <html>
+            <head><style>body{font-family:Arial;}</style></head>
+            <body>
+                <h2>Nuevo contacto desde la web</h2>
+                <p><strong>Nombre:</strong> $nombre</p>
+                <p><strong>Email:</strong> $email</p>
+                <p><strong>Mensaje:</strong><br>".nl2br($mensaje)."</p>
+                <hr>
+                <small>Mensaje enviado desde formulario web.</small>
+            </body>
+            </html>
+        ";
+        $mail->AltBody = "Nombre: $nombre\nEmail: $email\nMensaje:\n$mensaje";
+        
+        // Enviar
+        $mail->send();
+        echo "✅ ¡Mensaje enviado correctamente! Te responderemos a la brevedad.";
+        
+    } catch (Exception $e) {
+        echo "❌ Hubo un error al enviar el mensaje: {$mail->ErrorInfo}";
+    }
+} else {
+    // Si alguien accede directamente al script sin enviar el formulario
+    echo "Acceso no permitido.";
+}
+?>

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Mapa de Oración | Jehová es mi Pastor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    #prayer-map {
+      width: 100%;
+      height: 70vh;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      z-index: 1;
+    }
+
+    .map-wrapper {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .map-legend {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+      background: var(--card-bg);
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      font-size: 0.82rem;
+      border: 1px solid var(--border-light);
+      max-width: 220px;
+      pointer-events: none;
+    }
+
+    .map-legend h4 {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-legend .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .map-legend .dot.prayer { background: #e07c3c; }
+    .map-legend .dot.answered { background: #27ae60; }
+
+    .prayer-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+      margin-top: 30px;
+    }
+
+    .prayer-form-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+    }
+
+    .prayer-form-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prayer-form-card p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+    }
+
+    .prayer-form-card .form-group {
+      margin-bottom: 16px;
+    }
+
+    .prayer-form-card label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--primary);
+      font-size: 0.85rem;
+    }
+
+    .prayer-form-card label i { margin-right: 6px; color: var(--secondary); }
+
+    .prayer-form-card input,
+    .prayer-form-card textarea,
+    .prayer-form-card select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      background: var(--bg);
+      color: var(--text-color);
+    }
+
+    .prayer-form-card input:focus,
+    .prayer-form-card textarea:focus,
+    .prayer-form-card select:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(212,168,67,0.1);
+      outline: none;
+    }
+
+    .prayer-form-card textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .prayer-form-card .location-info {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .prayer-form-card .location-info i { color: var(--secondary); }
+
+    .btn-prayer {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: var(--primary);
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      box-shadow: 0 4px 14px rgba(212,168,67,0.3);
+    }
+
+    .btn-prayer:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212,168,67,0.4);
+    }
+
+    .btn-prayer:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    .prayer-feedback {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      display: none;
+      animation: fadeInUp 0.4s ease;
+    }
+
+    .prayer-feedback.success { display: block; background: rgba(37,211,102,0.1); color: #1da851; border-left: 4px solid #1da851; }
+    .prayer-feedback.error { display: block; background: rgba(231,76,60,0.1); color: #c0392b; border-left: 4px solid #c0392b; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .prayer-list-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+    }
+
+    .prayer-list-card .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .prayer-list-card .list-header h3 {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prayer-count-badge {
+      background: rgba(212,168,67,0.12);
+      color: var(--secondary);
+      padding: 3px 12px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .prayer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .prayer-list::-webkit-scrollbar { width: 4px; }
+    .prayer-list::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 4px; }
+
+    .prayer-list-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      transition: background 0.2s;
+    }
+
+    .prayer-list-item:hover { background: rgba(212,168,67,0.04); }
+
+    .prayer-list-item .marker-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    .prayer-list-item .prayer-info { flex: 1; min-width: 0; }
+
+    .prayer-list-item .prayer-info .prayer-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--primary);
+    }
+
+    .prayer-list-item .prayer-info .prayer-location {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .prayer-list-item .prayer-info .prayer-text {
+      font-size: 0.85rem;
+      color: var(--text-color);
+      margin-top: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .prayer-list-item .prayer-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .prayer-list-item .prayer-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--muted);
+      transition: color 0.3s;
+      font-family: inherit;
+    }
+
+    .prayer-list-item .prayer-actions .pray-amen:hover { color: #27ae60; }
+    .prayer-list-item .prayer-actions .pray-amen.done { color: #27ae60; }
+
+    .prayer-list-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .prayer-list-empty i {
+      font-size: 2.5rem;
+      color: var(--secondary);
+      opacity: 0.3;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      #prayer-map { height: 50vh; }
+      .prayer-panel { grid-template-columns: 1fr; }
+      .map-legend { display: none; }
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius-sm) !important;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .leaflet-popup-content { margin: 12px 16px !important; }
+    .leaflet-popup-content h4 { margin-bottom: 4px; font-size: 0.95rem; }
+    .leaflet-popup-content p { font-size: 0.85rem; color: #555; line-height: 1.5; }
+    .leaflet-popup-content small { font-size: 0.72rem; color: #999; display: block; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+<header id="main-header">
+  <div class="container header-container">
+    <div class="logo-wrapper">
+      <a href="index.html" class="logo-link">
+        <img src="fotos/imagen1.png" alt="Logo" class="logo" onerror="this.src='https://placehold.co/60x60?text=JEMP'"/>
+        <span class="brand-name">Iglesia y Fundación Jehová es mi Pastor</span>
+      </a>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Modo oscuro/claro"><i class="fas fa-moon"></i></button>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html#inicio">Inicio</a></li>
+        <li><a href="nosotros.html">Sobre Nosotros</a></li>
+        <li><a href="comedor.html">MI PEQUEÑO BELÉN</a></li>
+        <li><a href="videos.html">Videos</a></li>
+        <li><a href="formulario_ayuda.html">Cómo Ayudar</a></li>
+        <li><a href="noticias.html">Noticias</a></li>
+        <li><a href="radio.html">Radio Online</a></li>
+        <li><a href="oracion.html">Oración</a></li>
+        <li><a href="mapa_oracion.html" class="active">Mapa de Oración</a></li>
+        <li><a href="nube_oracion.html">Nube de Oración</a></li>
+        <li><a href="index.html#vida-eclesiastica">Horarios</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero-section" style="height: 35vh; min-height: 250px; background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200');">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <h1><i class="fas fa-globe-americas"></i> Mapa de Oración</h1>
+    <p>Marca tu ubicación y une tu oración a las de nuestra comunidad alrededor del mundo.</p>
+  </div>
+</section>
+
+<main class="container">
+  <section class="info-section" style="padding-top: 30px;">
+    <div class="map-wrapper reveal">
+      <div id="prayer-map"></div>
+      <div class="map-legend">
+        <h4><i class="fas fa-info-circle" style="color:var(--secondary);"></i> Leyenda</h4>
+        <div><span class="dot prayer"></span> Petición activa</div>
+        <div><span class="dot answered"></span> Oración respondida</div>
+      </div>
+    </div>
+
+    <div class="prayer-panel">
+      <div class="prayer-form-card reveal">
+        <h3><i class="fas fa-hand-paper" style="color:var(--secondary);"></i> Añade tu Oración</h3>
+        <p>Haz clic en el mapa para marcar tu ubicación, luego completa los datos.</p>
+        <form id="prayerForm">
+          <div class="form-group">
+            <label><i class="fas fa-map-pin"></i> Ubicación seleccionada</label>
+            <input type="text" id="prayerLocation" placeholder="Haz clic en el mapa..." readonly>
+            <input type="hidden" id="prayerLat" value="">
+            <input type="hidden" id="prayerLng" value="">
+            <div class="location-info"><i class="fas fa-mouse-pointer"></i> <span id="locationHint">Haz clic en cualquier punto del mapa</span></div>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Nombre o iniciales</label>
+            <input type="text" id="prayerName" placeholder="Ej: María G." maxlength="30">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-pen"></i> Tu petición <span style="color:#e74c3c;">*</span></label>
+            <textarea id="prayerRequest" placeholder="Ej: Por la salud de mi familia, por los niños del comedor..." maxlength="300" required></textarea>
+            <div style="text-align:right;font-size:0.75rem;color:var(--muted);margin-top:2px;"><span id="prayerCharCount">0</span>/300</div>
+          </div>
+          <button type="submit" class="btn-prayer" id="submitPrayerBtn">
+            <i class="fas fa-pray"></i> Publicar Oración
+          </button>
+          <div id="prayerFeedback" class="prayer-feedback"></div>
+        </form>
+      </div>
+
+      <div class="prayer-list-card reveal">
+        <div class="list-header">
+          <h3><i class="fas fa-list" style="color:var(--secondary);"></i> Oraciones Activas</h3>
+          <span class="prayer-count-badge" id="prayerCount">0</span>
+        </div>
+        <div class="prayer-list" id="prayerList"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="main-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h4>Jehová es mi Pastor</h4>
+        <p style="font-size: 0.95rem;">Iglesia y Fundación comprometida con la restauración espiritual y social de nuestra comunidad en Barquisimeto.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
+        <ul>
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="nosotros.html">Sobre Nosotros</a></li>
+            <li><a href="comedor.html">Comedor</a></li>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="radio.html">Radio Online</a></li>
+            <li><a href="oracion.html">Oración</a></li>
+            <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+            <li><a href="nube_oracion.html">Nube de Oración</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contáctanos</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Sector Loma de León, Barquisimeto</p>
+        <p><i class="fab fa-whatsapp"></i> +58 416-9566305</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.tiktok.com/@ijmp2" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.youtube.com/channel/UCSzpStj31s7LO0oks_TPrcQ" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Iglesia y Fundación "Jehová es mi Pastor". Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="whatsapp-float">
+  <div class="whatsapp-popup" id="whatsappPopup">
+    <a href="https://wa.me/584169566305?text=Hola%2C%20quiero%20apoyar%20el%20comedor%20infantil" target="_blank"><i class="fas fa-heart" style="color:#e74c3c;"></i> Quiero donar</a>
+    <a href="https://wa.me/584169566305?text=Necesito%20oraci%C3%B3n" target="_blank"><i class="fas fa-pray" style="color:#8e44ad;"></i> Petición de oración</a>
+    <a href="https://wa.me/584169566305?text=Hola%2C%20quisiera%20visitar%20la%20iglesia" target="_blank"><i class="fas fa-map-marker-alt" style="color:#2ecc71;"></i> Cómo llegar</a>
+  </div>
+  <button class="whatsapp-btn" id="whatsappBtn" aria-label="Contactar por WhatsApp">
+    <span class="pulse"></span>
+    <i class="fab fa-whatsapp"></i>
+  </button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close">&times;</button>
+    <button class="lightbox-nav lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+    <button class="lightbox-nav lightbox-next"><i class="fas fa-chevron-right"></i></button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-counter"></div>
+    <div class="lightbox-caption"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = 'ijmp_oraciones';
+  const MAX_STORED = 100;
+
+  let map, marker, heatLayer = null;
+  const defaultCenter = [9.7489, -69.2757]; // Barquisimeto, Lara, Venezuela
+  const defaultZoom = 7;
+
+  // Inicializar mapa
+  map = L.map('prayer-map', {
+    center: defaultCenter,
+    zoom: defaultZoom,
+    zoomControl: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://openstreetmap.org/copyright">OSM</a>',
+    maxZoom: 18
+  }).addTo(map);
+
+  // Ícono personalizado para marcadores de oración
+  const prayerIcon = L.divIcon({
+    html: '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e07c3c,#f09a5a);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(224,124,60,0.4);border:3px solid white;"><i class="fas fa-pray" style="color:white;font-size:14px;"></i></div>',
+    className: '',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18]
+  });
+
+  const answeredIcon = L.divIcon({
+    html: '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#27ae60,#2ecc71);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(39,174,96,0.4);border:3px solid white;"><i class="fas fa-check" style="color:white;font-size:14px;"></i></div>',
+    className: '',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18]
+  });
+
+  // Cargar oraciones guardadas
+  const getPrayers = () => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  };
+
+  const savePrayers = (data) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  };
+
+  // Renderizar todos los marcadores en el mapa
+  const renderMarkers = () => {
+    map.eachLayer(layer => {
+      if (layer instanceof L.Marker || layer._heat) map.removeLayer(layer);
+    });
+
+    const items = getPrayers();
+    const heatPoints = [];
+
+    items.forEach(p => {
+      if (!p.lat || !p.lng) return;
+      heatPoints.push([p.lat, p.lng, p.answered ? 0.5 : 1]);
+
+      const icon = p.answered ? answeredIcon : prayerIcon;
+      const popupText = `
+        <h4>${p.name || 'Anónimo'}</h4>
+        <p><i class="fas fa-quote-left" style="color:#d4a843;opacity:0.5;"></i> ${p.request}</p>
+        <small>${p.location} · ${new Date(p.timestamp).toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric'})}</small>
+      `;
+      L.marker([p.lat, p.lng], { icon })
+        .addTo(map)
+        .bindPopup(popupText);
+    });
+
+    // Heat map layer
+    if (heatPoints.length > 2) {
+      heatLayer = L.heatLayer(heatPoints, {
+        radius: 30,
+        blur: 20,
+        maxZoom: 12,
+        max: 1,
+        gradient: { 0.2: '#e07c3c', 0.5: '#d4a843', 0.8: '#e8c56a' }
+      }).addTo(map);
+    }
+  };
+
+  // Clic en el mapa
+  map.on('click', (e) => {
+    const { lat, lng } = e.latlng;
+    if (marker) map.removeLayer(marker);
+
+    marker = L.marker([lat, lng], { icon: prayerIcon, draggable: true }).addTo(map);
+    marker.on('dragend', () => {
+      const pos = marker.getLatLng();
+      document.getElementById('prayerLat').value = pos.lat.toFixed(5);
+      document.getElementById('prayerLng').value = pos.lng.toFixed(5);
+      updateLocationName(pos.lat, pos.lng);
+    });
+
+    document.getElementById('prayerLat').value = lat.toFixed(5);
+    document.getElementById('prayerLng').value = lng.toFixed(5);
+    document.getElementById('prayerLocation').value = `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+    document.getElementById('locationHint').textContent = 'Ubicación seleccionada ✓';
+    updateLocationName(lat, lng);
+  });
+
+  // Obtener nombre de ubicación con Nominatim
+  const updateLocationName = async (lat, lng) => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=10&accept-language=es`);
+      const data = await res.json();
+      const display = data.display_name || `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+      document.getElementById('prayerLocation').value = display.split(', ').slice(0, 4).join(', ');
+    } catch {
+      document.getElementById('prayerLocation').value = `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+    }
+  };
+
+  // Renderizar lista de oraciones
+  const renderList = () => {
+    const listEl = document.getElementById('prayerList');
+    const countEl = document.getElementById('prayerCount');
+    const items = getPrayers();
+    items.sort((a, b) => b.timestamp - a.timestamp);
+    countEl.textContent = items.length;
+
+    if (items.length === 0) {
+      listEl.innerHTML = `
+        <div class="prayer-list-empty">
+          <i class="fas fa-pray"></i>
+          <h4 style="font-size:1rem;margin-bottom:4px;">Sé el primero en orar</h4>
+          <p style="font-size:0.85rem;">Haz clic en el mapa y deja tu petición</p>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = items.map(p => `
+      <div class="prayer-list-item">
+        <div class="marker-icon"><i class="fas fa-pray"></i></div>
+        <div class="prayer-info">
+          <div class="prayer-name">${p.name || 'Anónimo'}</div>
+          <div class="prayer-location"><i class="fas fa-map-marker-alt"></i> ${p.location}</div>
+          <div class="prayer-text">${p.request}</div>
+        </div>
+        <div class="prayer-actions">
+          <button class="pray-amen ${p.answered ? 'done' : ''}" data-id="${p.id}" title="${p.answered ? 'Respondida' : 'Marcar como respondida'}">
+            <i class="fas fa-${p.answered ? 'check-circle' : 'circle'}"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.pray-amen').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const items = getPrayers();
+        const found = items.find(x => x.id === id);
+        if (found) {
+          found.answered = !found.answered;
+          savePrayers(items);
+          renderMarkers();
+          renderList();
+        }
+      });
+    });
+  };
+
+  // Formulario
+  const form = document.getElementById('prayerForm');
+  const requestInput = document.getElementById('prayerRequest');
+  const charCount = document.getElementById('prayerCharCount');
+
+  charCount.textContent = requestInput.value.length;
+  requestInput.addEventListener('input', () => {
+    charCount.textContent = requestInput.value.length;
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const lat = document.getElementById('prayerLat').value;
+    const lng = document.getElementById('prayerLng').value;
+    const request = requestInput.value.trim();
+
+    if (!lat || !lng) {
+      showFeedback('error', '<i class="fas fa-exclamation-circle"></i> Haz clic en el mapa para seleccionar tu ubicación.');
+      return;
+    }
+    if (!request || request.length < 5) {
+      showFeedback('error', '<i class="fas fa-exclamation-circle"></i> Escribe al menos 5 caracteres.');
+      return;
+    }
+
+    const name = document.getElementById('prayerName').value.trim() || 'Anónimo';
+    const location = document.getElementById('prayerLocation').value || `${lat.slice(0,5)}, ${lng.slice(0,5)}`;
+
+    const items = getPrayers();
+    items.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name,
+      request,
+      location,
+      lat: parseFloat(lat),
+      lng: parseFloat(lng),
+      timestamp: Date.now(),
+      answered: false
+    });
+
+    if (items.length > MAX_STORED) {
+      items.sort((a, b) => b.timestamp - a.timestamp);
+      items.length = MAX_STORED;
+    }
+
+    savePrayers(items);
+
+    if (marker) { map.removeLayer(marker); marker = null; }
+    form.reset();
+    charCount.textContent = '0';
+    document.getElementById('locationHint').textContent = 'Haz clic en cualquier punto del mapa';
+
+    showFeedback('success', '<i class="fas fa-check-circle"></i> Oración publicada. ¡Amén!');
+
+    renderMarkers();
+    renderList();
+
+    setTimeout(() => {
+      document.getElementById('prayerFeedback').className = 'prayer-feedback';
+    }, 4000);
+  });
+
+  const showFeedback = (type, msg) => {
+    const fb = document.getElementById('prayerFeedback');
+    fb.className = `prayer-feedback ${type}`;
+    fb.innerHTML = msg;
+  };
+
+  // Inicializar
+  renderMarkers();
+  renderList();
+});
+</script>
+<script src="script.js"></script>
+</body>
+</html>

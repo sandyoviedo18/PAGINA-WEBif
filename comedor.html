@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Comedor Mi Pequeño Belén - Jehová es mi Pastor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header id="main-header">
+    <div class="container header-container">
+      <div class="logo-wrapper">
+        <a href="index.html" class="logo-link">
+            <img src="fotos/imagen1.png" alt="Logo" class="logo" onerror="this.src='https://placehold.co/60x60?text=JEMP'"/>
+            <span class="brand-name">Iglesia y Fundación Jehová es mi Pastor</span>
+        </a>
+      </div>
+      <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Modo oscuro/claro"><i class="fas fa-moon"></i></button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#inicio">Inicio</a></li>
+          <li><a href="nosotros.html">Sobre Nosotros</a></li>
+          <li><a href="comedor.html" class="active">MI PEQUEÑO BELÉN</a></li>
+          <li><a href="videos.html">Videos</a></li>
+          <li><a href="formulario_ayuda.html">Cómo Ayudar</a></li>
+          <li><a href="noticias.html">Noticias</a></li>
+          <li><a href="radio.html">Radio Online</a></li>
+          <li><a href="oracion.html">Oración</a></li>
+          <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+          <li><a href="nube_oracion.html">Nube de Oración</a></li>
+          <li><a href="index.html#vida-eclesiastica">Horarios</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero-section" style="height: 60vh; min-height: 450px; background-image: url('fotos/10.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <h1>Comedor Mi Pequeño Belén</h1>
+      <p>Transformando vidas a través del amor y el servicio cada viernes.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="info-section reveal">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; align-items: center;">
+        <div>
+          <h2 style="text-align: left;">Misión del Comedor Mi Pequeño Belén</h2>
+          <p>Nuestra misión es garantizar que cada niño de nuestra comunidad reciba no solo un alimento balanceado para su cuerpo, sino también el sustento espiritual y el amor necesarios para su desarrollo integral. Buscamos ser un refugio de paz y bendición donde la palabra de Dios transforme corazones.</p>
+        </div>
+        <div class="reveal">
+          <img src="fotos/22.jpg" alt="Misión Comedor" style="width: 100%; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" width="600" height="400" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <section class="info-section reveal">
+      <h2>Nuestras Actividades de los Viernes</h2>
+      <p class="lead" style="text-align: center; margin-bottom: 40px;">Cada semana, abrimos nuestras puertas para brindar un apoyo integral a los niños de la comunidad de Loma de León.</p>
+      
+      <div class="schedule-grid">
+        <div class="schedule-card reveal">
+          <i class="fas fa-bible"></i>
+          <h3>Alimento Espiritual</h3>
+          <p>Iniciamos con historias bíblicas, canciones y dinámicas que enseñan valores cristianos y el gran amor que Dios tiene por cada niño.</p>
+        </div>
+        <div class="schedule-card reveal">
+          <i class="fas fa-utensils"></i>
+          <h3>Alimento Nutricional</h3>
+          <p>Servimos almuerzos balanceados y nutritivos, preparados con los más altos estándares de higiene y mucho cariño para el sano crecimiento físico.</p>
+        </div>
+        <div class="schedule-card reveal">
+          <i class="fas fa-heart"></i>
+          <h3>Atención y Cuidado</h3>
+          <p>Brindamos un espacio seguro donde los niños reciben atención personalizada, permitiéndoles jugar, aprender y sentirse protegidos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-section reveal">
+      <h2 style="text-align: center;">NUESTRA GRAN LABOR</h2>
+      <div class="schedule-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top: 30px;">
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos/1.jpg" alt="Equipo Voluntario" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Equipo Voluntario</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos/2.jpg" alt="Preparando Alimentos" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Preparando Alimentos</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos/3.jpg" alt="Bebidas Refrescantes" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Bebidas Refrescantes</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos/4.jpg" alt="Platos Servidos" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Platos Servidos</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos/5.jpg" alt="Donaciones Recibidas" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Donaciones Recibidas</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos2/1.jpg" alt="Actividad Comedor" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Actividad Comedor</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos2/2.jpg" alt="Labor Social" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Labor Social</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos2/3.jpg" alt="Servicio Comunitario" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Servicio Comunitario</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos2/4.jpg" alt="Apoyo a la niñez" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Apoyo a la Niñez</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos2/5.jpg" alt="Voluntariado" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Voluntariado</span></figcaption>
+          </figure>
+        </div>
+        <div class="gallery-item reveal">
+          <figure>
+            <img src="fotos2/6.jpg" alt="Compromiso Social" width="300" height="200" loading="lazy">
+            <figcaption class="gallery-overlay"><span>Compromiso Social</span></figcaption>
+          </figure>
+        </div>
+      </div>
+      
+    </section>
+    
+
+    <section class="info-section reveal" style="text-align: center;">
+      <h2>Video de Nuestras Actividades</h2>
+      <div style="max-width: 800px; margin: 30px auto; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+        <video controls playsinline webkit-playsinline preload="metadata" style="width: 100%; display: block; border-radius: 15px;">
+          <source src="fotos2/100.mp4" type="video/mp4">
+          
+          Tu navegador no soporta la reproducción de video.
+        </video>
+      </div>
+    </section>
+
+    <section class="info-section reveal" style="background: var(--card-bg); border-radius: var(--radius-lg); padding: 50px 40px; margin-bottom: 30px; border: 1px solid var(--border-light);">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 style="margin-bottom: 8px;"><i class="fas fa-calculator" style="color:var(--secondary);"></i> Simulador de Impacto</h2>
+        <p class="lead" style="font-size:0.95rem;">Mueve el control y ve cuántos niños puedes bendecir con tu donación.</p>
+
+        <div style="margin: 30px auto; max-width: 500px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-weight:700;color:var(--primary);font-size:0.9rem;">$5</span>
+            <span id="donationAmount" style="font-size:2.2rem;font-weight:800;color:var(--secondary);">$25</span>
+            <span style="font-weight:700;color:var(--primary);font-size:0.9rem;">$100</span>
+          </div>
+          <input type="range" id="donationSlider" min="5" max="100" value="25" step="5"
+            style="width:100%;height:8px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,var(--secondary),var(--secondary-light));border-radius:4px;outline:none;cursor:pointer;accent-color:var(--secondary);">
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px;max-width:340px;margin-left:auto;margin-right:auto;">
+            <div style="background:var(--bg);border-radius:var(--radius-md);padding:20px 10px;border:1px solid var(--border-light);">
+              <div style="font-size:2rem;font-weight:800;color:var(--secondary);" id="mealCount">2</div>
+              <div style="font-size:0.8rem;color:var(--muted);font-weight:600;">🍽️ Almuerzos</div>
+            </div>
+            <div style="background:var(--bg);border-radius:var(--radius-md);padding:20px 10px;border:1px solid var(--border-light);">
+              <div style="font-size:2rem;font-weight:800;color:var(--accent);" id="childCount">2</div>
+              <div style="font-size:0.8rem;color:var(--muted);font-weight:600;">🧒 Niños</div>
+            </div>
+          </div>
+
+          <div id="impactMessage" style="margin-top:20px;padding:16px;border-radius:var(--radius-sm);background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.15);font-size:0.95rem;line-height:1.6;color:var(--text-color);">
+            <strong>Con <span id="impactDollars">$25</span></strong> — <strong><span id="impactChildren">5</span> niños</strong> reciben <strong><span id="impactMeals">5</span> almuerzos</strong> esta semana 🙏
+          </div>
+
+          <div style="margin-top:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;" id="childFaces">
+            <img src="fotos/1.jpg" alt="Niño" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--secondary);">
+            <img src="fotos/2.jpg" alt="Niño" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--secondary);">
+            <img src="fotos/3.jpg" alt="Niño" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--secondary);">
+          </div>
+        </div>
+
+        <a href="contacto.html" class="btn-primary" style="margin-top:10px;">
+          <i class="fas fa-heart"></i> Quiero donar esta cantidad
+        </a>
+      </div>
+    </section>
+
+    <section class="info-section reveal" style="background: var(--light-bg); border-radius: 15px; padding: 40px; margin-bottom: 40px;">
+        <div style="text-align: center;">
+            <h2>¿Deseas ser parte de esta labor?</h2>
+            <p>Puedes apoyar esta gran obra y sigamos cada día siguiendo con la bendición para los niños.</p>
+            <br>
+            <a href="contacto.html" class="btn-primary">Quiero Apoyar</a>
+        </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h4>Jehová es mi Pastor</h4>
+          <p style="font-size: 0.95rem;">Iglesia y Fundación comprometida con la restauración espiritual y social de nuestra comunidad en Barquisimeto.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="nosotros.html">Sobre Nosotros</a></li>
+            <li><a href="comedor.html">Comedor</a></li>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="radio.html">Radio Online</a></li>
+            <li><a href="oracion.html">Oración</a></li>
+            <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+            <li><a href="nube_oracion.html">Nube de Oración</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contáctanos</h4>
+          <p><i class="fas fa-map-marker-alt"></i> Sector Loma de León, Barquisimeto</p>
+          <p><i class="fab fa-whatsapp"></i> +58 416-9566305</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.tiktok.com/@ijmp2" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/channel/UCSzpStj31s7LO0oks_TPrcQ" target="_blank"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Iglesia y Fundación "Jehová es mi Pastor". Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="whatsapp-float">
+    <div class="whatsapp-popup" id="whatsappPopup">
+      <a href="https://wa.me/584169566305?text=Hola%2C%20quiero%20apoyar%20el%20comedor%20infantil" target="_blank"><i class="fas fa-heart" style="color:#e74c3c;"></i> Quiero donar</a>
+      <a href="https://wa.me/584169566305?text=Necesito%20oraci%C3%B3n" target="_blank"><i class="fas fa-pray" style="color:#8e44ad;"></i> Petición de oración</a>
+      <a href="https://wa.me/584169566305?text=Hola%2C%20quisiera%20visitar%20la%20iglesia" target="_blank"><i class="fas fa-map-marker-alt" style="color:#2ecc71;"></i> Cómo llegar</a>
+    </div>
+    <button class="whatsapp-btn" id="whatsappBtn" aria-label="Contactar por WhatsApp">
+      <span class="pulse"></span>
+      <i class="fab fa-whatsapp"></i>
+    </button>
+  </div>
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-inner">
+      <button class="lightbox-close">&times;</button>
+      <button class="lightbox-nav lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+      <button class="lightbox-nav lightbox-next"><i class="fas fa-chevron-right"></i></button>
+      <img id="lightboxImg" src="" alt="">
+      <div class="lightbox-counter"></div>
+      <div class="lightbox-caption"></div>
+    </div>
+  </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('donationSlider');
+    if (!slider) return;
+    const amount = document.getElementById('donationAmount');
+    const meals = document.getElementById('mealCount');
+    const children = document.getElementById('childCount');
+    const msg = document.getElementById('impactMessage');
+    const iDollars = document.getElementById('impactDollars');
+    const iMeals = document.getElementById('impactMeals');
+    const iChildren = document.getElementById('impactChildren');
+    const faces = document.getElementById('childFaces');
+
+    const update = (val) => {
+      const d = parseInt(val);
+      const m = Math.floor(d / 5);
+      const c = Math.floor(d / 5);
+      amount.textContent = `$${d}`;
+      meals.textContent = m;
+      children.textContent = c;
+      iDollars.textContent = `$${d}`;
+      iMeals.textContent = m;
+      iChildren.textContent = c;
+
+      let txt = `<strong>$${d}</strong> — <strong>${c} niño${c !== 1 ? 's' : ''}</strong> reciben <strong>${m} almuerzo${m !== 1 ? 's' : ''}</strong> esta semana 🙏`;
+      msg.innerHTML = txt;
+
+      const photos = ['fotos/1.jpg','fotos/2.jpg','fotos/3.jpg','fotos/4.jpg','fotos/5.jpg','fotos2/1.jpg','fotos2/2.jpg','fotos2/3.jpg','fotos2/4.jpg','fotos2/5.jpg'];
+      const count = Math.min(c, photos.length);
+      faces.innerHTML = photos.slice(0, count).map(src =>
+        `<img src="${src}" alt="Niño" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--secondary);">`
+      ).join('');
+    };
+
+    slider.addEventListener('input', (e) => update(e.target.value));
+    update(slider.value);
+  });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

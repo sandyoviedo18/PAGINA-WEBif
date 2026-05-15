@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Radio Online - Jehová es mi Pastor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .radio-page {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #f7f5f0 0%, #ffffff 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+    [data-theme="dark"] .radio-page {
+      background: linear-gradient(145deg, #12121e 0%, #1a1a2e 100%);
+    }
+
+    .radio-player-wrap {
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .radio-player-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .radio-player-header .icon-ring {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 2.4rem;
+      color: var(--primary);
+      box-shadow: 0 8px 30px rgba(212,168,67,0.3);
+      animation: pulseRing 3s ease-in-out infinite;
+    }
+    @keyframes pulseRing {
+      0%, 100% { box-shadow: 0 8px 30px rgba(212,168,67,0.3); }
+      50% { box-shadow: 0 8px 50px rgba(212,168,67,0.5); }
+    }
+    .radio-player-header h1 {
+      font-size: clamp(1.6rem, 4vw, 2rem);
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .radio-player-header p {
+      color: var(--text-light);
+      font-size: 0.92rem;
+    }
+
+    /* Player Card */
+    .player-card {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 28px;
+      padding: 32px 28px;
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,0.12);
+    }
+    [data-theme="dark"] .player-card {
+      background: rgba(26,26,46,0.75);
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    /* Station selector */
+    .station-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .station-tab {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 2px solid rgba(212,168,67,0.2);
+      background: transparent;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    .station-tab:hover { border-color: rgba(212,168,67,0.4); }
+    .station-tab.active {
+      border-color: var(--secondary);
+      background: rgba(212,168,67,0.1);
+      color: var(--secondary);
+    }
+    .station-tab small { display: block; font-weight: 400; font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+
+    /* Artwork */
+    .artwork {
+      width: 180px;
+      height: 180px;
+      border-radius: 24px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #d4a843, #e8c84a, #c9a035);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: var(--primary);
+      box-shadow: 0 12px 40px rgba(212,168,67,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .artwork::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    }
+    .artwork.playing { animation: artworkPulse 4s ease-in-out infinite; }
+    @keyframes artworkPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Song info */
+    .song-info {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .song-info h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+    .song-info p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    .live-badge {
+      display: inline-block;
+      background: #e74c3c;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 10px;
+      border-radius: 50px;
+      margin-top: 6px;
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .controls .ctrl-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(212,168,67,0.1);
+      color: var(--secondary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .controls .ctrl-btn:hover { background: rgba(212,168,67,0.2); transform: scale(1.05); }
+    .controls .ctrl-btn.play-btn {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: var(--primary);
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px rgba(212,168,67,0.3);
+    }
+    .controls .ctrl-btn.play-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(212,168,67,0.4); }
+    .controls .ctrl-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* Volume */
+    .volume-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .volume-row i { color: var(--text-light); font-size: 0.85rem; width: 18px; text-align: center; }
+    .volume-row input[type="range"] {
+      width: 140px;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(212,168,67,0.2);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+    .volume-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--secondary);
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .volume-row input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--secondary);
+      cursor: pointer;
+      border: 2px solid white;
+    }
+
+    /* Equalizer */
+    .equalizer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 32px;
+      margin-bottom: 6px;
+    }
+    .equalizer .bar {
+      width: 4px;
+      background: var(--secondary);
+      border-radius: 4px;
+      height: 4px;
+      transition: height 0.2s;
+    }
+    .equalizer.active .bar:nth-child(1) { animation: eq1 0.6s ease-in-out infinite alternate; }
+    .equalizer.active .bar:nth-child(2) { animation: eq2 0.7s ease-in-out infinite alternate; }
+    .equalizer.active .bar:nth-child(3) { animation: eq3 0.5s ease-in-out infinite alternate; }
+    .equalizer.active .bar:nth-child(4) { animation: eq2 0.6s ease-in-out infinite alternate; }
+    .equalizer.active .bar:nth-child(5) { animation: eq1 0.55s ease-in-out infinite alternate; }
+    @keyframes eq1 { 0% { height: 4px; } 100% { height: 24px; } }
+    @keyframes eq2 { 0% { height: 4px; } 100% { height: 16px; } }
+    @keyframes eq3 { 0% { height: 4px; } 100% { height: 28px; } }
+
+    /* Error */
+    .radio-error {
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(231,76,60,0.08);
+      color: #e74c3c;
+      font-size: 0.82rem;
+      display: none;
+      margin-top: 12px;
+    }
+
+    /* Links */
+    .radio-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .radio-links a {
+      color: var(--text-light);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .radio-links a:hover { color: var(--secondary); }
+
+    @media (max-width: 500px) {
+      .radio-page { padding: 24px 16px 40px; }
+      .player-card { padding: 24px 18px; border-radius: 20px; }
+      .artwork { width: 140px; height: 140px; font-size: 3rem; }
+      .controls .ctrl-btn { width: 44px; height: 44px; font-size: 1rem; }
+      .controls .ctrl-btn.play-btn { width: 56px; height: 56px; font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <header id="main-header">
+    <div class="container header-container">
+      <div class="logo-wrapper">
+        <a href="index.html" class="logo-link">
+            <img src="fotos/imagen1.png" alt="Logo" class="logo" onerror="this.src='https://placehold.co/60x60?text=JEMP'"/>
+            <span class="brand-name">Iglesia y Fundación Jehová es mi Pastor</span>
+        </a>
+      </div>
+      <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Modo oscuro/claro"><i class="fas fa-moon"></i></button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#inicio">Inicio</a></li>
+          <li><a href="nosotros.html">Sobre Nosotros</a></li>
+          <li><a href="comedor.html">MI PEQUEÑO BELÉN</a></li>
+          <li><a href="videos.html">Videos</a></li>
+          <li><a href="formulario_ayuda.html">Cómo Ayudar</a></li>
+          <li><a href="noticias.html">Noticias</a></li>
+          <li><a href="radio.html" class="active">Radio Online</a></li>
+          <li><a href="oracion.html">Oración</a></li>
+          <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+          <li><a href="nube_oracion.html">Nube de Oración</a></li>
+          <li><a href="index.html#vida-eclesiastica">Horarios</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="radio-page">
+    <div class="radio-player-wrap">
+      <div class="radio-player-header">
+        <div class="icon-ring"><i class="fas fa-microphone-alt"></i></div>
+        <h1>Radio Online</h1>
+        <p>Música cristiana que transforma vidas</p>
+      </div>
+
+      <div class="player-card">
+        <div class="mode-tabs" style="display:flex;gap:8px;margin-bottom:20px;">
+          <button class="station-tab active" id="modeAudioBtn" style="flex:1;"><i class="fas fa-headphones"></i> Reproductor</button>
+          <button class="station-tab" id="modeEmbedBtn" style="flex:1;"><i class="fas fa-globe"></i> Web Player</button>
+        </div>
+
+        <!-- AUDIO PLAYER MODE -->
+        <div id="audioMode">
+          <div class="station-tabs">
+            <button class="station-tab active" data-stream="https://ic.streann.com:443/cvaudio128" data-fallback="https://stream.zeno.fm/zy7br0h0t4zuv" data-label="CVCLAVOZ">
+              CVCLAVOZ <small>La Voz de la Esperanza</small>
+            </button>
+            <button class="station-tab" data-stream="https://ic.streann.com:443/cvaudio" data-fallback="https://stream.zeno.fm/wy3r0h4er2zuv" data-label="CVCLAVOZ URBANO">
+              URBANO <small>Ritmo juvenil</small>
+            </button>
+          </div>
+
+          <div class="artwork" id="artwork">
+            <i class="fas fa-headphones"></i>
+          </div>
+
+          <div class="song-info">
+            <h3 id="stationName">CVCLAVOZ</h3>
+            <p id="stationDesc">La Voz de la Esperanza</p>
+            <span class="live-badge"><i class="fas fa-circle" style="font-size:0.5rem;vertical-align:middle;margin-right:4px;"></i> EN VIVO</span>
+          </div>
+
+          <div class="equalizer" id="equalizer">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+
+          <audio id="radioAudio" preload="none" crossorigin="anonymous"></audio>
+
+          <div class="controls">
+            <button class="ctrl-btn" id="muteBtn" title="Silenciar"><i class="fas fa-volume-up"></i></button>
+            <button class="ctrl-btn play-btn" id="playBtn" title="Reproducir/Pausar"><i class="fas fa-play"></i></button>
+            <button class="ctrl-btn" id="stopBtn" title="Detener"><i class="fas fa-stop"></i></button>
+          </div>
+
+          <div class="volume-row">
+            <i class="fas fa-volume-down"></i>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8">
+            <i class="fas fa-volume-up"></i>
+          </div>
+
+          <div class="radio-error" id="radioError">
+            <i class="fas fa-exclamation-triangle"></i> No se puede conectar. Intentando con fuente alternativa...
+          </div>
+
+          <div class="radio-links">
+            <a href="https://cvclavoz.com/" target="_blank"><i class="fas fa-globe"></i> Sitio oficial</a>
+            <a href="https://programacion.cvclavoz.com/" target="_blank"><i class="fas fa-calendar-alt"></i> Programación</a>
+          </div>
+        </div>
+
+        <!-- EMBED PLAYER MODE -->
+        <div id="embedMode" style="display:none;">
+          <div class="artwork">
+            <i class="fas fa-tower-broadcast"></i>
+          </div>
+          <div class="song-info">
+            <h3>CVCLAVOZ — Reproductor Web</h3>
+            <p>Escucha directamente desde el navegador</p>
+          </div>
+          <div style="position:relative;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:16px;background:var(--bg);">
+            <iframe src="https://zeno.fm/player/zy7br0h0t4zuv" style="width:100%;height:180px;border:none;" allow="autoplay; encrypted-media" loading="lazy"></iframe>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-light);margin-bottom:14px;">
+            <i class="fas fa-info-circle"></i> Si no se escucha, presiona play en el reproductor de Zeno.FM.
+          </p>
+          <div class="radio-links" style="margin-top:4px;justify-content:center;gap:12px;">
+            <a href="https://cvclavoz.com/" target="_blank" style="font-weight:700;color:var(--secondary);font-size:0.9rem;"><i class="fas fa-external-link-alt"></i> cvclavoz.com</a>
+            <a href="https://zeno.fm/radio-cvclavoz/" target="_blank" style="font-weight:600;font-size:0.9rem;"><i class="fas fa-headphones"></i> Zeno.FM</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h4>Jehová es mi Pastor</h4>
+          <p style="font-size: 0.95rem;">Iglesia y Fundación comprometida con la restauración espiritual y social de nuestra comunidad en Barquisimeto.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="nosotros.html">Sobre Nosotros</a></li>
+            <li><a href="comedor.html">Comedor</a></li>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="radio.html">Radio Online</a></li>
+            <li><a href="oracion.html">Oración</a></li>
+            <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+            <li><a href="nube_oracion.html">Nube de Oración</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contáctanos</h4>
+          <p><i class="fas fa-map-marker-alt"></i> Sector Loma de León, Barquisimeto</p>
+          <p><i class="fab fa-whatsapp"></i> +58 416-9566305</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.tiktok.com/@ijmp2" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/channel/UCSzpStj31s7LO0oks_TPrcQ" target="_blank"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Iglesia y Fundación "Jehová es mi Pastor". Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="whatsapp-float">
+    <div class="whatsapp-popup" id="whatsappPopup">
+      <a href="https://wa.me/584169566305?text=Hola%2C%20quiero%20apoyar%20el%20comedor%20infantil" target="_blank"><i class="fas fa-heart" style="color:#e74c3c;"></i> Quiero donar</a>
+      <a href="https://wa.me/584169566305?text=Necesito%20oraci%C3%B3n" target="_blank"><i class="fas fa-pray" style="color:#8e44ad;"></i> Petición de oración</a>
+      <a href="https://wa.me/584169566305?text=Hola%2C%20quisiera%20visitar%20la%20iglesia" target="_blank"><i class="fas fa-map-marker-alt" style="color:#2ecc71;"></i> Cómo llegar</a>
+    </div>
+    <button class="whatsapp-btn" id="whatsappBtn" aria-label="Contactar por WhatsApp">
+      <span class="pulse"></span>
+      <i class="fab fa-whatsapp"></i>
+    </button>
+  </div>
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-inner">
+      <button class="lightbox-close">&times;</button>
+      <button class="lightbox-nav lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+      <button class="lightbox-nav lightbox-next"><i class="fas fa-chevron-right"></i></button>
+      <img id="lightboxImg" src="" alt="">
+      <div class="lightbox-counter"></div>
+      <div class="lightbox-caption"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+  (function() {
+    // Mode toggle
+    const modeAudio = document.getElementById('modeAudioBtn');
+    const modeEmbed = document.getElementById('modeEmbedBtn');
+    const audioMode = document.getElementById('audioMode');
+    const embedMode = document.getElementById('embedMode');
+
+    modeAudio.addEventListener('click', () => {
+      modeAudio.classList.add('active');
+      modeEmbed.classList.remove('active');
+      audioMode.style.display = '';
+      embedMode.style.display = 'none';
+    });
+    modeEmbed.addEventListener('click', () => {
+      modeEmbed.classList.add('active');
+      modeAudio.classList.remove('active');
+      audioMode.style.display = 'none';
+      embedMode.style.display = '';
+    });
+
+    const audio = document.getElementById('radioAudio');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const artwork = document.getElementById('artwork');
+    const equalizer = document.getElementById('equalizer');
+    const stationName = document.getElementById('stationName');
+    const stationDesc = document.getElementById('stationDesc');
+    const radioError = document.getElementById('radioError');
+    const audioTabs = document.querySelectorAll('#audioMode .station-tab');
+
+    let currentStream = 'https://ic.streann.com:443/cvaudio128';
+    let isPlaying = false;
+    let retryTimer = null;
+
+    const streamSources = {
+      'https://ic.streann.com:443/cvaudio128': {
+        fallback: 'https://stream.zeno.fm/zy7br0h0t4zuv',
+        name: 'CVCLAVOZ',
+        desc: 'La Voz de la Esperanza'
+      },
+      'https://ic.streann.com:443/cvaudio': {
+        fallback: 'https://stream.zeno.fm/wy3r0h4er2zuv',
+        name: 'CVCLAVOZ URBANO',
+        desc: 'Ritmo juvenil'
+      }
+    };
+
+    function updateStationUI(stream) {
+      const info = streamSources[stream];
+      if (info) {
+        stationName.textContent = info.name;
+        stationDesc.textContent = info.desc;
+      }
+    }
+
+    function setActiveTab(stream) {
+      audioTabs.forEach(t => {
+        t.classList.toggle('active', t.dataset.stream === stream);
+      });
+    }
+
+    function showError(msg) {
+      radioError.textContent = msg;
+      radioError.style.display = 'block';
+    }
+
+    function hideError() {
+      radioError.style.display = 'none';
+    }
+
+    function setPlayState(playing) {
+      isPlaying = playing;
+      if (playing) {
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        artwork.classList.add('playing');
+        equalizer.classList.add('active');
+      } else {
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        artwork.classList.remove('playing');
+        equalizer.classList.remove('active');
+      }
+    }
+
+    function tryStream(stream, retry) {
+      hideError();
+      audio.src = stream;
+      audio.play()
+        .then(() => setPlayState(true))
+        .catch(() => {
+          const info = streamSources[stream] || {};
+          if (retry !== false && info.fallback) {
+            showError('Conectando con fuente alternativa...');
+            tryStream(info.fallback, false);
+          } else {
+            showError('No pudimos conectar. Usa el Web Player o escucha en cvclavoz.com');
+            setPlayState(false);
+          }
+        });
+    }
+
+    function doPlay() {
+      tryStream(currentStream);
+    }
+
+    function doStop() {
+      audio.pause();
+      audio.src = '';
+      setPlayState(false);
+      hideError();
+      if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
+    }
+
+    // Play/Pause
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        audio.pause();
+        setPlayState(false);
+      } else {
+        doPlay();
+      }
+    });
+
+    // Stop
+    stopBtn.addEventListener('click', doStop);
+
+    // Mute
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      muteBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    });
+
+    // Volume
+    volumeSlider.addEventListener('input', (e) => {
+      audio.volume = parseFloat(e.target.value);
+      if (audio.volume === 0) {
+        muteBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
+      } else {
+        muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      }
+    });
+
+    // Station tabs
+    audioTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const wasPlaying = isPlaying;
+        const newStream = tab.dataset.stream;
+        if (newStream === currentStream) return;
+        doStop();
+        currentStream = newStream;
+        setActiveTab(currentStream);
+        updateStationUI(currentStream);
+        if (wasPlaying) {
+          doPlay();
+        }
+      });
+    });
+
+    // Auto-reconnect on error
+    audio.addEventListener('error', () => {
+      if (audio.src) {
+        showError('Se perdió la conexión. Reconectando...');
+        setPlayState(false);
+        if (retryTimer) clearTimeout(retryTimer);
+        retryTimer = setTimeout(() => {
+          if (audio.src) doPlay();
+        }, 3000);
+      }
+    });
+
+    // Handle pause by browser
+    audio.addEventListener('pause', () => {
+      if (audio.src) setPlayState(false);
+    });
+
+    // Init
+    setActiveTab(currentStream);
+    updateStationUI(currentStream);
+
+    // Auto-start with user interaction hint
+    const firstTap = () => {
+      doPlay();
+      document.removeEventListener('click', firstTap);
+      document.removeEventListener('touchstart', firstTap);
+    };
+    document.addEventListener('click', firstTap);
+    document.addEventListener('touchstart', firstTap);
+  })();
+  </script>
+</body>
+</html>

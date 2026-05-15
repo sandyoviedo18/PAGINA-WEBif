@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Sala de Oración | Jehová es mi Pastor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .prayer-room {
+      position: relative;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0a0e1a 0%, #1a1a2e 30%, #0f1f3a 70%, #0a0e1a 100%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .prayer-room::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 30%, rgba(212,168,67,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 60%, rgba(200,150,255,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(212,168,67,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      animation: aurora 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes aurora {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    .prayer-back-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 100;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      padding: 10px 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: 'Open Sans', sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .prayer-back-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      transform: translateX(-3px);
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.15; transform: scale(0.8); }
+      50% { opacity: var(--max-opacity, 0.9); transform: scale(1.2); }
+    }
+
+    .shooting-star {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 6px 2px rgba(255,255,255,0.3);
+      animation: shoot linear forwards;
+    }
+
+    @keyframes shoot {
+      0% { transform: translate(0, 0); opacity: 1; }
+      70% { opacity: 1; }
+      100% { transform: translate(300px, 300px); opacity: 0; }
+    }
+
+    .prayer-room-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 900px;
+      padding: 60px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .prayer-room-header {
+      text-align: center;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .prayer-room-header .holy-icon {
+      font-size: 3rem;
+      color: var(--secondary);
+      opacity: 0.8;
+      margin-bottom: 12px;
+      display: block;
+      animation: floatIcon 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(212,168,67,0.2));
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-8px) rotate(-2deg); }
+      75% { transform: translateY(4px) rotate(2deg); }
+    }
+
+    .prayer-room-header h1 {
+      color: white;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 30px rgba(212,168,67,0.15);
+    }
+
+    .prayer-room-header p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+
+    .prayer-room-header .candle-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .prayer-room-header .candle {
+      display: inline-block;
+      width: 3px;
+      height: 24px;
+      background: linear-gradient(to top, var(--secondary), #f5e6b0, rgba(255,255,255,0.6));
+      border-radius: 2px;
+      animation: flicker var(--cd, 2s) ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(212,168,67,0.2);
+    }
+
+    .prayer-room-header .candle:nth-child(2) {
+      --cd: 2.4s;
+      height: 18px;
+    }
+    .prayer-room-header .candle:nth-child(3) {
+      --cd: 1.8s;
+      height: 28px;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(212,168,67,0.2); }
+      50% { opacity: 1; box-shadow: 0 0 16px rgba(212,168,67,0.5); }
+    }
+
+    .music-player-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .music-player-card .music-icon {
+      font-size: 2rem;
+      color: var(--secondary);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .music-player-card h3 {
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .music-player-card p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+    }
+
+    .music-player-card iframe {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: none;
+    }
+
+    .prayer-input-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 600px;
+      transition: border-color 0.4s, box-shadow 0.4s;
+    }
+
+    .prayer-input-card:focus-within {
+      border-color: rgba(212,168,67,0.3);
+      box-shadow: 0 0 30px rgba(212,168,67,0.06), inset 0 0 30px rgba(212,168,67,0.03);
+    }
+
+    .prayer-input-card h3 {
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prayer-input-card p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.82rem;
+      margin-bottom: 16px;
+    }
+
+    .prayer-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .prayer-input-row input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .prayer-input-row input::placeholder { color: rgba(255,255,255,0.3); }
+    .prayer-input-row input:focus { border-color: var(--secondary); background: rgba(255,255,255,0.08); }
+
+    .prayer-input-row button {
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .prayer-input-row button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .prayer-input-row button:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(212,168,67,0.3); }
+    .prayer-input-row button:hover::after { opacity: 1; }
+    .prayer-input-row button:active { transform: scale(0.97); }
+    .prayer-input-row button:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+    .prayer-wall {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .prayer-wall::-webkit-scrollbar { width: 3px; }
+    .prayer-wall::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 3px; }
+
+    .prayer-wall-empty {
+      text-align: center;
+      color: rgba(255,255,255,0.3);
+      padding: 30px;
+      font-size: 0.9rem;
+    }
+
+    .prayer-wall-empty i { font-size: 2rem; display: block; margin-bottom: 10px; opacity: 0.5; }
+
+    .prayer-msg {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      animation: msgIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .prayer-msg:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(212,168,67,0.15);
+      box-shadow: 0 0 20px rgba(212,168,67,0.04);
+    }
+
+    .prayer-msg:nth-child(2) { animation-delay: 0.05s; }
+    .prayer-msg:nth-child(3) { animation-delay: 0.1s; }
+    .prayer-msg:nth-child(4) { animation-delay: 0.15s; }
+    .prayer-msg:nth-child(5) { animation-delay: 0.2s; }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .prayer-msg .msg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .prayer-msg .msg-name {
+      font-weight: 700;
+      color: var(--secondary);
+      font-size: 0.85rem;
+    }
+
+    .prayer-msg .msg-time {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .prayer-msg .msg-text {
+      color: rgba(255,255,255,0.85);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .prayer-msg .msg-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .prayer-msg .msg-actions button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.3s;
+      font-family: 'Open Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .prayer-msg .msg-actions .btn-amen:hover { color: #f1c40f; }
+    .prayer-msg .msg-actions .btn-pray:hover { color: #2ecc71; }
+    .prayer-msg .msg-actions .btn-amen.done { color: #f1c40f; }
+    .prayer-msg .msg-actions .btn-pray.done { color: #2ecc71; }
+
+    .prayer-msg .msg-actions .count { font-size: 0.75rem; }
+
+    .prayer-footer-text {
+      text-align: center;
+      color: rgba(255,255,255,0.2);
+      font-size: 0.78rem;
+      margin-top: 10px;
+      padding-bottom: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .prayer-input-row { flex-direction: column; }
+      .prayer-room-content { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="prayer-room" id="prayerRoom">
+  <a href="index.html" class="prayer-back-btn"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
+  <div class="stars" id="stars"></div>
+
+  <div class="prayer-room-content">
+    <div class="prayer-room-header reveal">
+      <i class="fas fa-cross holy-icon"></i>
+      <h1>Sala de Oración</h1>
+      <p>Enciende una vela espiritual con tu oración. Otros hermanos orarán por ti.</p>
+      <div class="candle-group">
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+      </div>
+    </div>
+
+    <div class="music-player-card reveal">
+      <i class="fas fa-headphones music-icon"></i>
+      <h3>Música de Adoración</h3>
+      <p>Ambiente sonoro para tu momento con Dios</p>
+      <iframe style="border-radius:12px" src="https://www.youtube.com/embed/videoseries?list=PLhCkHJT6Hgc5gVkyrdvVbqI52XG2KLvNP&autoplay=1&mute=1&loop=1" title="Música instrumental cristiana" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <div class="prayer-input-card reveal">
+      <h3><i class="fas fa-feather-alt" style="color:var(--secondary);"></i> Comparte tu oración</h3>
+      <p>Escribe tu petición y recibe el apoyo de la comunidad</p>
+      <div class="prayer-input-row">
+        <input type="text" id="prayerInput" placeholder="Ej: Por sanidad de mi madre..." maxlength="200">
+        <button id="prayerSendBtn"><i class="fas fa-paper-plane"></i> Enviar</button>
+      </div>
+    </div>
+
+    <div class="prayer-wall" id="prayerWall"></div>
+
+    <div class="prayer-footer-text">
+      <i class="fas fa-fire"></i> Las oraciones se apagan después de 24 horas · Ora sin cesar
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Generate stars
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = 1 + Math.random() * 2.5;
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+    star.style.setProperty('--max-opacity', (0.4 + Math.random() * 0.6).toFixed(2));
+    star.style.animationDelay = Math.random() * 5 + 's';
+    star.style.width = star.style.height = size + 'px';
+    starsContainer.appendChild(star);
+  }
+
+  // Shooting stars
+  const createShootingStar = () => {
+    const s = document.createElement('div');
+    s.className = 'shooting-star';
+    s.style.left = (Math.random() * 60 + 10) + '%';
+    s.style.top = (Math.random() * 30 + 5) + '%';
+    s.style.animationDuration = (0.8 + Math.random() * 1.2) + 's';
+    starsContainer.appendChild(s);
+    setTimeout(() => s.remove(), 2500);
+  };
+  setInterval(createShootingStar, 4000 + Math.random() * 6000);
+  setTimeout(createShootingStar, 1000);
+
+  const STORAGE_KEY = 'ijmp_oraciones_sala';
+  const TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+  const getPrayers = () => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  };
+
+  const savePrayers = (data) => {
+    // Remove expired
+    const now = Date.now();
+    const filtered = data.filter(p => now - p.timestamp < TTL);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    return filtered;
+  };
+
+  const timeAgo = (ts) => {
+    const d = Date.now() - ts;
+    const mins = Math.floor(d / 60000);
+    if (mins < 1) return 'ahora';
+    if (mins < 60) return `hace ${mins} min`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `hace ${hrs}h`;
+    return 'hace 1d';
+  };
+
+  const render = () => {
+    const wall = document.getElementById('prayerWall');
+    let items = getPrayers();
+    items.sort((a, b) => b.timestamp - a.timestamp);
+
+    if (items.length === 0) {
+      wall.innerHTML = '<div class="prayer-wall-empty"><i class="fas fa-pray"></i>Sé el primero en orar</div>';
+      return;
+    }
+
+    wall.innerHTML = items.map(p => `
+      <div class="prayer-msg">
+        <div class="msg-header">
+          <span class="msg-name"><i class="fas fa-user-circle"></i> ${p.name || 'Anónimo'}</span>
+          <span class="msg-time">${timeAgo(p.timestamp)}</span>
+        </div>
+        <div class="msg-text">${p.text}</div>
+        <div class="msg-actions">
+          <button class="btn-amen ${p.amen ? 'done' : ''}" data-id="${p.id}">
+            <i class="fas fa-${p.amen ? 'check-circle' : 'circle'}"></i> Amén <span class="count">(${p.amenCount || 0})</span>
+          </button>
+          <button class="btn-pray ${p.prayed ? 'done' : ''}" data-id="${p.id}">
+            <i class="fas fa-${p.prayed ? 'check-circle' : 'circle'}"></i> Oro por ti <span class="count">(${p.prayCount || 0})</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.btn-amen').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const items = getPrayers();
+        const found = items.find(x => x.id === id);
+        if (found) {
+          found.amen = true;
+          found.amenCount = (found.amenCount || 0) + 1;
+          savePrayers(items);
+          render();
+        }
+      });
+    });
+
+    document.querySelectorAll('.btn-pray').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const items = getPrayers();
+        const found = items.find(x => x.id === id);
+        if (found) {
+          found.prayed = true;
+          found.prayCount = (found.prayCount || 0) + 1;
+          savePrayers(items);
+          render();
+        }
+      });
+    });
+  };
+
+  // Submit
+  const input = document.getElementById('prayerInput');
+  const sendBtn = document.getElementById('prayerSendBtn');
+
+  const submitPrayer = () => {
+    const text = input.value.trim();
+    if (!text || text.length < 3) return;
+    if (text.length > 200) return;
+
+    const items = getPrayers();
+    items.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+      name: '',
+      text,
+      timestamp: Date.now(),
+      amen: false,
+      amenCount: 0,
+      prayed: false,
+      prayCount: 0
+    });
+
+    savePrayers(items);
+    input.value = '';
+    render();
+  };
+
+  sendBtn.addEventListener('click', submitPrayer);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitPrayer();
+  });
+
+  render();
+  // Auto-refresh every 30s
+  setInterval(render, 30000);
+});
+</script>
+</body>
+</html>

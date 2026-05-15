@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Muro de Bendiciones | Jehová es mi Pastor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .blessings-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .blessings-form-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light);
+      position: sticky;
+      top: 100px;
+    }
+
+    .blessings-form-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .blessings-form-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .blessings-form-card .form-group {
+      margin-bottom: 18px;
+    }
+
+    .blessings-form-card label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--primary);
+      font-size: 0.88rem;
+    }
+
+    .blessings-form-card label i {
+      margin-right: 6px;
+      color: var(--secondary);
+    }
+
+    .blessings-form-card input,
+    .blessings-form-card textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      background: var(--bg);
+      color: var(--text-color);
+    }
+
+    .blessings-form-card input:focus,
+    .blessings-form-card textarea:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(212,168,67,0.1);
+      outline: none;
+    }
+
+    .blessings-form-card textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .blessings-form-card .char-count {
+      text-align: right;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .blessings-form-card .btn-submit-blessing {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: var(--primary);
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      box-shadow: 0 4px 14px rgba(212,168,67,0.3);
+    }
+
+    .blessings-form-card .btn-submit-blessing:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212,168,67,0.4);
+    }
+
+    .blessings-form-card .btn-submit-blessing:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    .form-feedback {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      display: none;
+      animation: fadeInUp 0.4s ease;
+    }
+
+    .form-feedback.success {
+      display: block;
+      background: rgba(37, 211, 102, 0.1);
+      color: #1da851;
+      border-left: 4px solid #1da851;
+    }
+
+    .form-feedback.error {
+      display: block;
+      background: rgba(231, 76, 60, 0.1);
+      color: #c0392b;
+      border-left: 4px solid #c0392b;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .blessings-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .blessings-feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .blessings-feed-header h3 {
+      font-size: 1.2rem;
+    }
+
+    .blessings-count {
+      background: rgba(212,168,67,0.12);
+      color: var(--secondary);
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .blessing-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      animation: cardIn 0.5s ease both;
+      transition: var(--transition);
+    }
+
+    .blessing-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .blessing-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .blessing-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .blessing-meta {
+      flex: 1;
+    }
+
+    .blessing-name {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+
+    .blessing-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .blessing-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-color);
+      padding-left: 58px;
+    }
+
+    .blessing-text i {
+      color: var(--secondary);
+      opacity: 0.4;
+      margin-right: 6px;
+    }
+
+    .blessing-footer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 14px;
+      padding-left: 58px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .blessing-like {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.3s;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+
+    .blessing-like:hover { color: #e74c3c; }
+    .blessing-like.liked { color: #e74c3c; }
+
+    .blessings-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .blessings-empty i {
+      font-size: 3rem;
+      color: var(--secondary);
+      opacity: 0.4;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .blessings-empty h4 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 900px) {
+      .blessings-layout {
+        grid-template-columns: 1fr;
+      }
+      .blessings-form-card {
+        position: static;
+        order: -1;
+      }
+      .blessing-text {
+        padding-left: 0;
+        margin-top: 10px;
+      }
+      .blessing-footer {
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header id="main-header">
+  <div class="container header-container">
+    <div class="logo-wrapper">
+      <a href="index.html" class="logo-link">
+        <img src="fotos/imagen1.png" alt="Logo" class="logo" onerror="this.src='https://placehold.co/60x60?text=JEMP'"/>
+        <span class="brand-name">Iglesia y Fundación Jehová es mi Pastor</span>
+      </a>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Modo oscuro/claro"><i class="fas fa-moon"></i></button>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html#inicio">Inicio</a></li>
+        <li><a href="nosotros.html">Sobre Nosotros</a></li>
+        <li><a href="comedor.html">MI PEQUEÑO BELÉN</a></li>
+        <li><a href="videos.html">Videos</a></li>
+        <li><a href="formulario_ayuda.html">Cómo Ayudar</a></li>
+        <li><a href="noticias.html">Noticias</a></li>
+          <li><a href="radio.html">Radio Online</a></li>
+          <li><a href="oracion.html">Oración</a></li>
+          <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+          <li><a href="nube_oracion.html">Nube de Oración</a></li>
+          <li><a href="index.html#vida-eclesiastica">Horarios</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero-section" style="height: 40vh; min-height: 300px; background-image: url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1200');">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <h1><i class="fas fa-praying-hands"></i> Muro de Bendiciones</h1>
+    <p>Comparte cómo Dios está obrando en tu vida y anima a otros con tu testimonio.</p>
+  </div>
+</section>
+
+<main class="container">
+  <section class="info-section">
+    <div class="blessings-layout">
+      <div class="blessings-form-card reveal">
+        <h3><i class="fas fa-feather-alt" style="color: var(--secondary);"></i> Comparte tu Bendición</h3>
+        <p>Escribe cómo Dios te bendijo esta semana. Tu testimonio puede inspirar a alguien más.</p>
+        <form id="blessingForm">
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Tu nombre (opcional)</label>
+            <input type="text" id="blessingName" placeholder="Ej: María" maxlength="30" autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-pen"></i> Tu bendición <span style="color:#e74c3c;">*</span></label>
+            <textarea id="blessingMessage" placeholder="Ej: Esta semana Dios proveyó el alimento para mi familia y pude ver su fidelidad una vez más..." maxlength="500" required></textarea>
+            <div class="char-count"><span id="charCount">0</span>/500</div>
+          </div>
+          <button type="submit" class="btn-submit-blessing" id="submitBlessingBtn">
+            <i class="fas fa-paper-plane"></i> Publicar Bendición
+          </button>
+          <div id="blessingFeedback" class="form-feedback"></div>
+        </form>
+      </div>
+
+      <div class="blessings-feed reveal">
+        <div class="blessings-feed-header">
+          <h3><i class="fas fa-stream" style="color: var(--secondary);"></i> Bendiciones Recientes</h3>
+          <span class="blessings-count" id="blessingsCount">0</span>
+        </div>
+        <div id="blessingsList"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="main-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h4>Jehová es mi Pastor</h4>
+        <p style="font-size: 0.95rem;">Iglesia y Fundación comprometida con la restauración espiritual y social de nuestra comunidad en Barquisimeto.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
+        <ul>
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="nosotros.html">Sobre Nosotros</a></li>
+            <li><a href="comedor.html">Comedor</a></li>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="radio.html">Radio Online</a></li>
+            <li><a href="oracion.html">Oración</a></li>
+            <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+            <li><a href="nube_oracion.html">Nube de Oración</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contáctanos</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Sector Loma de León, Barquisimeto</p>
+        <p><i class="fab fa-whatsapp"></i> +58 416-9566305</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.tiktok.com/@ijmp2" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.youtube.com/channel/UCSzpStj31s7LO0oks_TPrcQ" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Iglesia y Fundación "Jehová es mi Pastor". Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="whatsapp-float">
+  <div class="whatsapp-popup" id="whatsappPopup">
+    <a href="https://wa.me/584169566305?text=Hola%2C%20quiero%20apoyar%20el%20comedor%20infantil" target="_blank"><i class="fas fa-heart" style="color:#e74c3c;"></i> Quiero donar</a>
+    <a href="https://wa.me/584169566305?text=Necesito%20oraci%C3%B3n" target="_blank"><i class="fas fa-pray" style="color:#8e44ad;"></i> Petición de oración</a>
+    <a href="https://wa.me/584169566305?text=Hola%2C%20quisiera%20visitar%20la%20iglesia" target="_blank"><i class="fas fa-map-marker-alt" style="color:#2ecc71;"></i> Cómo llegar</a>
+  </div>
+  <button class="whatsapp-btn" id="whatsappBtn" aria-label="Contactar por WhatsApp">
+    <span class="pulse"></span>
+    <i class="fab fa-whatsapp"></i>
+  </button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close">&times;</button>
+    <button class="lightbox-nav lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+    <button class="lightbox-nav lightbox-next"><i class="fas fa-chevron-right"></i></button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-counter"></div>
+    <div class="lightbox-caption"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = 'ijmp_bendiciones';
+  const MAX_STORED = 50;
+  const SHOWN = 10;
+
+  const form = document.getElementById('blessingForm');
+  const nameInput = document.getElementById('blessingName');
+  const messageInput = document.getElementById('blessingMessage');
+  const submitBtn = document.getElementById('submitBlessingBtn');
+  const feedback = document.getElementById('blessingFeedback');
+  const listEl = document.getElementById('blessingsList');
+  const countEl = document.getElementById('blessingsCount');
+  const charCount = document.getElementById('charCount');
+
+  charCount.textContent = messageInput.value.length;
+  messageInput.addEventListener('input', () => {
+    charCount.textContent = messageInput.value.length;
+  });
+
+  const getBlessings = () => {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch { return []; }
+  };
+
+  const saveBlessings = (data) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  };
+
+  const timeAgo = (timestamp) => {
+    const diff = Date.now() - timestamp;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Justo ahora';
+    if (mins < 60) return `Hace ${mins} min`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `Hace ${hrs} h`;
+    const days = Math.floor(hrs / 24);
+    if (days === 1) return 'Ayer';
+    if (days < 7) return `Hace ${days} días`;
+    const weeks = Math.floor(days / 7);
+    if (weeks < 4) return `Hace ${weeks} sem`;
+    const months = Math.floor(days / 30);
+    return `Hace ${months} mes${months > 1 ? 'es' : ''}`;
+  };
+
+  const formatDate = (timestamp) => {
+    const d = new Date(timestamp);
+    const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  };
+
+  const renderBlessings = () => {
+    const items = getBlessings();
+    items.sort((a, b) => b.timestamp - a.timestamp);
+    const latest = items.slice(0, SHOWN);
+    countEl.textContent = items.length;
+
+    if (latest.length === 0) {
+      listEl.innerHTML = `
+        <div class="blessings-empty">
+          <i class="fas fa-star"></i>
+          <h4>Sé el primero en bendecir</h4>
+          <p>Comparte cómo Dios está obrando en tu vida y anima a otros.</p>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = latest.map((b, i) => `
+      <div class="blessing-card" style="animation-delay: ${i * 0.08}s">
+        <div class="blessing-card-header">
+          <div class="blessing-avatar">${(b.name || 'A')[0].toUpperCase()}</div>
+          <div class="blessing-meta">
+            <div class="blessing-name">${b.name || 'Anónimo'}</div>
+            <div class="blessing-date"><i class="far fa-clock"></i> ${timeAgo(b.timestamp)} · ${formatDate(b.timestamp)}</div>
+          </div>
+        </div>
+        <div class="blessing-text">
+          <i class="fas fa-quote-left"></i>${b.message}
+        </div>
+        <div class="blessing-footer">
+          <button class="blessing-like ${b.liked ? 'liked' : ''}" data-id="${b.id}">
+            <i class="fas fa-heart"></i> <span>${b.likes || 0}</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.blessing-like').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const items = getBlessings();
+        const found = items.find(x => x.id === id);
+        if (found) {
+          found.likes = (found.likes || 0) + 1;
+          found.liked = true;
+          saveBlessings(items);
+          renderBlessings();
+        }
+      });
+    });
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = messageInput.value.trim();
+    if (!message || message.length < 5) {
+      feedback.className = 'form-feedback error';
+      feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Escribe al menos 5 caracteres.';
+      return;
+    }
+    if (message.length > 500) {
+      feedback.className = 'form-feedback error';
+      feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Máximo 500 caracteres.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Publicando...';
+
+    const name = nameInput.value.trim() || 'Anónimo';
+    const items = getBlessings();
+    items.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name,
+      message,
+      timestamp: Date.now(),
+      likes: 0,
+      liked: false
+    });
+
+    if (items.length > MAX_STORED) {
+      items.sort((a, b) => b.timestamp - a.timestamp);
+      items.length = MAX_STORED;
+    }
+
+    saveBlessings(items);
+    form.reset();
+    charCount.textContent = '0';
+
+    feedback.className = 'form-feedback success';
+    feedback.innerHTML = '<i class="fas fa-check-circle"></i> ¡Bendición publicada! Dios te bendiga.';
+
+    setTimeout(() => {
+      feedback.className = 'form-feedback';
+      feedback.style.display = 'none';
+    }, 4000);
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Bendición';
+    renderBlessings();
+  });
+
+  renderBlessings();
+});
+</script>
+<script src="script.js"></script>
+</body>
+</html>

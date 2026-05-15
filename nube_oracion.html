@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Nube de Oración | Jehová es mi Pastor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .cloud-page {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #050812 0%, #0f0f24 40%, #1a0a2e 70%, #0a0e1a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cloud-page::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 30%, rgba(212,168,67,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 60%, rgba(200,150,255,0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(212,168,67,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .cloud-particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .cloud-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: floatParticle linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    .cloud-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1000px;
+      padding: 30px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .cloud-header {
+      text-align: center;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .cloud-header .cloud-icon {
+      font-size: 3rem;
+      color: var(--secondary);
+      opacity: 0.7;
+      display: block;
+      margin-bottom: 8px;
+      animation: cloudFloat 5s ease-in-out infinite;
+    }
+
+    @keyframes cloudFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-6px) rotate(-3deg); }
+      75% { transform: translateY(4px) rotate(2deg); }
+    }
+
+    .cloud-header h1 {
+      color: white;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: -0.02em;
+    }
+
+    .cloud-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.92rem;
+      margin-top: 6px;
+    }
+
+    .cloud-form-card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      width: 100%;
+      max-width: 560px;
+      transition: border-color 0.3s;
+    }
+
+    .cloud-form-card:focus-within {
+      border-color: rgba(212,168,67,0.3);
+    }
+
+    .cloud-form-card .form-label {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cloud-form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .cloud-form-row input {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .cloud-form-row input::placeholder { color: rgba(255,255,255,0.25); }
+    .cloud-form-row input:focus { border-color: var(--secondary); background: rgba(255,255,255,0.08); }
+
+    .cloud-form-row button {
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      min-height: 44px;
+    }
+
+    .cloud-form-row button:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(212,168,67,0.3); }
+    .cloud-form-row button:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+    .cloud-counter {
+      text-align: right;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+      margin-top: 4px;
+    }
+
+    .cloud-tag-area {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      max-height: 600px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .cloud-tag-area::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(212,168,67,0.03) 0%, transparent 40%),
+        radial-gradient(ellipse at 70% 80%, rgba(200,150,255,0.02) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .cloud-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.15);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .cloud-empty i {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .cloud-empty p {
+      font-size: 0.9rem;
+      max-width: 280px;
+      line-height: 1.6;
+    }
+
+    .cloud-tag {
+      position: absolute;
+      padding: 8px 18px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+      white-space: nowrap;
+      animation: tagAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+    }
+
+    @keyframes tagAppear {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .cloud-tag:hover {
+      transform: scale(1.15) !important;
+      border-color: var(--secondary);
+      background: rgba(212,168,67,0.12);
+      z-index: 10;
+    }
+
+    .cloud-tag .tag-text {
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+      font-size: inherit;
+      line-height: 1.3;
+    }
+
+    .cloud-tag .tag-amen {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 6px;
+      font-size: 0.7em;
+      color: var(--secondary);
+      opacity: 0.7;
+      vertical-align: middle;
+    }
+
+    .cloud-tag .tag-amen i {
+      font-size: 0.8em;
+    }
+
+    .cloud-tag .tag-amen-count {
+      font-weight: 700;
+    }
+
+    .cloud-tag.tag-just-added {
+      border-color: var(--secondary);
+      box-shadow: 0 0 20px rgba(212,168,67,0.2);
+    }
+
+    .cloud-tag.tag-just-added .tag-text {
+      color: #f5e6b0;
+    }
+
+    .cloud-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 560px;
+      padding: 0 8px;
+    }
+
+    .cloud-info-bar .info-item {
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cloud-info-bar .info-item i { color: var(--secondary); opacity: 0.5; }
+
+    .cloud-info-bar .cloud-clear-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.25);
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-family: inherit;
+      transition: 0.3s;
+    }
+
+    .cloud-info-bar .cloud-clear-btn:hover {
+      color: #e74c3c;
+      border-color: rgba(231,76,60,0.3);
+      background: rgba(231,76,60,0.06);
+    }
+
+    .cloud-footer-text {
+      text-align: center;
+      color: rgba(255,255,255,0.12);
+      font-size: 0.72rem;
+      padding-bottom: 20px;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.4s ease;
+      pointer-events: none;
+      z-index: 9999;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 700px) {
+      .cloud-form-row { flex-direction: column; }
+      .cloud-container { padding: 16px 12px 40px; }
+      .cloud-tag-area { min-height: 360px; max-height: 480px; }
+      .cloud-form-card { padding: 18px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .cloud-tag { font-size: 0.75rem; padding: 5px 12px; }
+      .cloud-info-bar { flex-wrap: wrap; gap: 8px; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="main-header">
+  <div class="container header-container">
+    <div class="logo-wrapper">
+      <a href="index.html" class="logo-link">
+        <img src="fotos/imagen1.png" alt="Logo" class="logo" onerror="this.src='https://placehold.co/60x60?text=JEMP'"/>
+        <span class="brand-name">Iglesia y Fundación Jehová es mi Pastor</span>
+      </a>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Modo oscuro/claro"><i class="fas fa-moon"></i></button>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html#inicio">Inicio</a></li>
+        <li><a href="nosotros.html">Sobre Nosotros</a></li>
+        <li><a href="comedor.html">MI PEQUEÑO BELÉN</a></li>
+        <li><a href="videos.html">Videos</a></li>
+        <li><a href="formulario_ayuda.html">Cómo Ayudar</a></li>
+        <li><a href="noticias.html">Noticias</a></li>
+        <li><a href="radio.html">Radio Online</a></li>
+        <li><a href="oracion.html">Oración</a></li>
+        <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+        <li><a href="nube_oracion.html" class="active">Nube de Oración</a></li>
+        <li><a href="index.html#vida-eclesiastica">Horarios</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="cloud-page">
+  <div class="cloud-particles" id="cloudParticles"></div>
+
+  <div class="cloud-container">
+    <div class="cloud-header reveal">
+      <i class="fas fa-cloud cloud-icon"></i>
+      <h1>Nube de Oración</h1>
+      <p>Tu oración se eleva como incienso. Envía tu petición y únete a la comunidad que ora sin cesar.</p>
+    </div>
+
+    <div class="cloud-form-card reveal">
+      <div class="form-label">
+        <i class="fas fa-feather-alt" style="color:var(--secondary);"></i>
+        <span>Escribe tu petición de oración</span>
+      </div>
+      <div class="cloud-form-row">
+        <input type="text" id="prayerInput" placeholder="Ej: Por sanidad de mi madre, por los niños..." maxlength="180">
+        <button id="prayerSendBtn"><i class="fas fa-paper-plane"></i> Elevar</button>
+      </div>
+      <div class="cloud-counter"><span id="charCount">0</span>/180</div>
+    </div>
+
+    <div class="cloud-info-bar reveal">
+      <span class="info-item"><i class="fas fa-pray"></i> <span id="totalCount">0</span> oraciones</span>
+      <span class="info-item"><i class="fas fa-fire"></i> Expiran en 24h</span>
+      <button class="cloud-clear-btn" id="clearBtn"><i class="fas fa-trash-alt"></i> Limpiar todo</button>
+    </div>
+
+    <div class="cloud-tag-area reveal" id="tagArea">
+      <div class="cloud-empty" id="cloudEmpty">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Las oraciones de la comunidad aparecerán aquí flotando como nubes</p>
+      </div>
+    </div>
+
+    <div class="cloud-footer-text">
+      <i class="fas fa-arrow-up"></i> Toca una nube para decir "Amén" · Tus oraciones suben al cielo
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toast"></div>
+
+<footer class="main-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h4>Jehová es mi Pastor</h4>
+        <p style="font-size: 0.95rem;">Iglesia y Fundación comprometida con la restauración espiritual y social de nuestra comunidad en Barquisimeto.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
+        <ul>
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="nosotros.html">Sobre Nosotros</a></li>
+            <li><a href="comedor.html">Comedor</a></li>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="radio.html">Radio Online</a></li>
+            <li><a href="oracion.html">Oración</a></li>
+            <li><a href="mapa_oracion.html">Mapa de Oración</a></li>
+            <li><a href="nube_oracion.html">Nube de Oración</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contáctanos</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Sector Loma de León, Barquisimeto</p>
+        <p><i class="fab fa-whatsapp"></i> +58 416-9566305</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.tiktok.com/@ijmp2" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.youtube.com/channel/UCSzpStj31s7LO0oks_TPrcQ" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Iglesia y Fundación "Jehová es mi Pastor". Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="whatsapp-float">
+  <div class="whatsapp-popup" id="whatsappPopup">
+    <a href="https://wa.me/584169566305?text=Hola%2C%20quiero%20apoyar%20el%20comedor%20infantil" target="_blank"><i class="fas fa-heart" style="color:#e74c3c;"></i> Quiero donar</a>
+    <a href="https://wa.me/584169566305?text=Necesito%20oraci%C3%B3n" target="_blank"><i class="fas fa-pray" style="color:#8e44ad;"></i> Petición de oración</a>
+    <a href="https://wa.me/584169566305?text=Hola%2C%20quisiera%20visitar%20la%20iglesia" target="_blank"><i class="fas fa-map-marker-alt" style="color:#2ecc71;"></i> Cómo llegar</a>
+  </div>
+  <button class="whatsapp-btn" id="whatsappBtn" aria-label="Contactar por WhatsApp">
+    <span class="pulse"></span>
+    <i class="fab fa-whatsapp"></i>
+  </button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close">&times;</button>
+    <button class="lightbox-nav lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+    <button class="lightbox-nav lightbox-next"><i class="fas fa-chevron-right"></i></button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-counter"></div>
+    <div class="lightbox-caption"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ---- Background particles ----
+  const particlesContainer = document.getElementById('cloudParticles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'cloud-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+    p.style.animationDuration = (12 + Math.random() * 20) + 's';
+    p.style.animationDelay = (Math.random() * 15) + 's';
+    particlesContainer.appendChild(p);
+  }
+
+  // ---- Storage ----
+  const STORAGE_KEY = 'ijmp_nube_oracion';
+  const TTL = 24 * 60 * 60 * 1000;
+
+  const getPrayers = () => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  };
+
+  const savePrayers = (data) => {
+    const now = Date.now();
+    const filtered = data.filter(p => now - p.timestamp < TTL);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    return filtered;
+  };
+
+  // ---- Tag cloud rendering ----
+  const tagArea = document.getElementById('tagArea');
+  const emptyEl = document.getElementById('cloudEmpty');
+  const totalCountEl = document.getElementById('totalCount');
+
+  const renderCloud = (highlightId) => {
+    let items = getPrayers();
+    items.sort((a, b) => a.timestamp - b.timestamp);
+    totalCountEl.textContent = items.length;
+
+    // Remove old tags (keep empty state)
+    tagArea.querySelectorAll('.cloud-tag').forEach(el => el.remove());
+
+    if (items.length === 0) {
+      emptyEl.style.display = 'flex';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    const areaRect = tagArea.getBoundingClientRect();
+    const areaW = tagArea.clientWidth || 600;
+    const areaH = tagArea.clientHeight || 480;
+
+    // Pre-calculate occupied zones to avoid overlap
+    const occupied = [];
+
+    const isOverlapping = (x, y, w, h) => {
+      const margin = 8;
+      for (const r of occupied) {
+        if (x < r.x + r.w + margin && x + w + margin > r.x &&
+            y < r.y + r.h + margin && y + h + margin > r.y) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const maxAmen = Math.max(...items.map(p => p.amenCount || 0), 1);
+
+    items.forEach((p, idx) => {
+      const tag = document.createElement('div');
+      tag.className = 'cloud-tag';
+      if (highlightId && p.id === highlightId) {
+        tag.classList.add('tag-just-added');
+        setTimeout(() => tag.classList.remove('tag-just-added'), 3000);
+      }
+
+      const sizeRatio = (p.amenCount || 0) / maxAmen;
+      const baseSize = 0.75 + sizeRatio * 0.55;
+      const fontSize = Math.max(0.75, Math.min(1.4, baseSize)) + 'rem';
+      tag.style.fontSize = fontSize;
+
+      // Higher amen = more opacity & prominent border
+      const opacity = 0.5 + sizeRatio * 0.45;
+      tag.style.opacity = opacity;
+      if ((p.amenCount || 0) > 0) {
+        tag.style.borderColor = `rgba(212,168,67,${0.1 + sizeRatio * 0.4})`;
+      }
+
+      tag.innerHTML = `
+        <span class="tag-text">${p.text}</span>
+        <span class="tag-amen"><i class="fas fa-hand-sparkles"></i> <span class="tag-amen-count">${p.amenCount || 0}</span></span>
+      `;
+
+      tag.dataset.id = p.id;
+      tag.title = 'Haz clic para decir Amén';
+
+      // Position: try random placement with overlap prevention
+      const tw = Math.min(p.text.length * (parseFloat(fontSize) * 7) + 80, areaW - 20);
+      const th = parseFloat(fontSize) * 28 + 10;
+
+      let placed = false;
+      let attempts = 0;
+      let tagX, tagY;
+
+      while (!placed && attempts < 80) {
+        tagX = 10 + Math.random() * (areaW - tw - 20);
+        tagY = 10 + Math.random() * (areaH - th - 20);
+        if (!isOverlapping(tagX, tagY, tw, th)) {
+          placed = true;
+          occupied.push({ x: tagX, y: tagY, w: tw, h: th });
+        }
+        attempts++;
+      }
+
+      if (!placed) {
+        tagX = 10 + Math.random() * (areaW - tw - 20);
+        tagY = 10 + Math.random() * (areaH - th - 20);
+        occupied.push({ x: tagX, y: tagY, w: tw, h: th });
+      }
+
+      tag.style.left = tagX + 'px';
+      tag.style.top = tagY + 'px';
+
+      // Floating animation - each tag gets unique drift params
+      const driftX = (Math.random() - 0.5) * 12;
+      const driftY = (Math.random() - 0.5) * 10;
+      const dur = 5 + Math.random() * 6;
+      tag.style.setProperty('--drift-x', driftX.toFixed(1) + 'px');
+      tag.style.setProperty('--drift-y', driftY.toFixed(1) + 'px');
+      tag.style.animation = `tagDrift ${dur.toFixed(1)}s ease-in-out infinite alternate`;
+      tag.style.animationDelay = (Math.random() * 3) + 's';
+
+      // Click = amen
+      tag.addEventListener('click', () => {
+        const items = getPrayers();
+        const found = items.find(x => x.id === p.id);
+        if (found) {
+          found.amenCount = (found.amenCount || 0) + 1;
+          savePrayers(items);
+          renderCloud();
+          showToast('¡Amén! 🙏');
+        }
+      });
+
+      tagArea.appendChild(tag);
+    });
+  };
+
+  // ---- Add drifting keyframes dynamically ----
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = `
+    @keyframes tagDrift {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(var(--drift-x, 5px), var(--drift-y, -5px)) rotate(${(Math.random() * 4 - 2).toFixed(1)}deg); }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  // ---- Toast ----
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+
+  const showToast = (msg) => {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2500);
+  };
+
+  // ---- Submit ----
+  const input = document.getElementById('prayerInput');
+  const sendBtn = document.getElementById('prayerSendBtn');
+  const charCount = document.getElementById('charCount');
+
+  input.addEventListener('input', () => {
+    charCount.textContent = input.value.length;
+    if (input.value.length > 180) input.value = input.value.slice(0, 180);
+  });
+
+  const submitPrayer = () => {
+    const text = input.value.trim();
+    if (!text || text.length < 3) {
+      showToast('✏️ Escribe al menos 3 caracteres');
+      return;
+    }
+
+    const items = getPrayers();
+    const newItem = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      text,
+      timestamp: Date.now(),
+      amenCount: 0
+    };
+    items.push(newItem);
+    savePrayers(items);
+    input.value = '';
+    charCount.textContent = '0';
+    renderCloud(newItem.id);
+    showToast('☁️ Tu oración se ha elevado');
+  };
+
+  sendBtn.addEventListener('click', submitPrayer);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitPrayer();
+  });
+
+  // ---- Clear ----
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    if (confirm('¿Limpiar todas las oraciones de la nube?')) {
+      localStorage.removeItem(STORAGE_KEY);
+      renderCloud();
+      showToast('🗑️ Nube limpiada');
+    }
+  });
+
+  // ---- Init ----
+  renderCloud();
+
+  // Auto-refresh every 60s
+  setInterval(() => renderCloud(), 60000);
+
+});
+</script>
+<script src="script.js"></script>
+</body>
+</html>
